@@ -16,8 +16,8 @@ class TopicoMapper(
         return Topico(
             t.titulo!!,
             t.mensagem!!,
-            cursoService.findCursoById(t.idCurso!!),
-            usuarioService.findUsuarioById(t.idUsuario!!)
+            cursoService.findById(t.idCurso!!),
+            usuarioService.findById(t.idUsuario!!)
         )
     }
 }

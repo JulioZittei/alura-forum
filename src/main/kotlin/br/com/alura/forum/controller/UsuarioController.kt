@@ -1,11 +1,12 @@
 package br.com.alura.forum.controller
 
-import br.com.alura.forum.model.Usuario
+import br.com.alura.forum.dto.CreateUsuarioRequest
+import br.com.alura.forum.dto.UsuarioResponse
 import br.com.alura.forum.service.UsuarioService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/usuarios")
@@ -14,12 +15,19 @@ class UsuarioController(
 ) {
 
     @GetMapping
-    fun getCursos(): List<Usuario> {
+    fun getCursos(): List<UsuarioResponse> {
         return usuarioService.findAllUsuarios()
     }
 
     @GetMapping("/{id}")
-    fun getCursoById(@PathVariable id: Long): Usuario {
+    fun getCursoById(@PathVariable id: Long): UsuarioResponse {
         return usuarioService.findUsuarioById(id)
+    }
+
+    @PostMapping
+    fun createUsuario(@Valid @RequestBody usuario: CreateUsuarioRequest, uriBuilder: UriComponentsBuilder): ResponseEntity<UsuarioResponse> {
+        val createdUsuario = usuarioService.createUsuario(usuario)
+        val uri = uriBuilder.path("/usuarios/${createdUsuario.id}").build().toUri()
+        return ResponseEntity.created(uri).body(createdUsuario)
     }
 }

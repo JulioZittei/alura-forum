@@ -1,11 +1,12 @@
 package br.com.alura.forum.controller
 
-import br.com.alura.forum.model.Curso
+import br.com.alura.forum.dto.CreateCursoRequest
+import br.com.alura.forum.dto.CursoResponse
 import br.com.alura.forum.service.CursoService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
 @RequestMapping("/cursos")
@@ -14,12 +15,19 @@ class CursoController (
 ) {
 
     @GetMapping
-    fun getCursos(): List<Curso> {
+    fun getCursos(): List<CursoResponse> {
         return cursoService.findAllCursos()
     }
 
     @GetMapping("/{id}")
-    fun getCursoById(@PathVariable id: Long): Curso {
+    fun getCursoById(@PathVariable id: Long): CursoResponse {
         return cursoService.findCursoById(id)
+    }
+
+    @PostMapping
+    fun createCurso(@Valid @RequestBody curso: CreateCursoRequest, uriBuilder: UriComponentsBuilder): ResponseEntity<CursoResponse> {
+        val createdCurso = cursoService.createCurso(curso)
+        val uri = uriBuilder.path("/cursos/${createdCurso.id}").build().toUri()
+        return ResponseEntity.created(uri).body(createdCurso)
     }
 }
