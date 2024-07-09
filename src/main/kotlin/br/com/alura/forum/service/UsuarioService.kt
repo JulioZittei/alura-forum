@@ -7,6 +7,8 @@ import br.com.alura.forum.mapper.UsuarioMapper
 import br.com.alura.forum.mapper.UsuarioResponseMapper
 import br.com.alura.forum.model.Usuario
 import br.com.alura.forum.repository.UsuarioRepository
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,7 +16,7 @@ class UsuarioService (
     private val usuarioRepository: UsuarioRepository,
     private val usuarioResponseMapper: UsuarioResponseMapper,
     private val usuarioMapper: UsuarioMapper
-) {
+): UserDetailsService {
 
     companion object {
         const val USUARIO_NAO_ENCONTRADO: String = "Usuário não encontrado"
@@ -39,6 +41,11 @@ class UsuarioService (
     fun createUsuario(usuario: CreateUsuarioRequest): UsuarioResponse {
         val createdUsuario = usuarioRepository.save(usuarioMapper.map(usuario))
         return usuarioResponseMapper.map(createdUsuario)
+    }
+
+    override fun loadUserByUsername(username: String?): UserDetails? {
+        val usuario = usuarioRepository.findByEmail(username).orElseThrow { RuntimeException("Usuario não encontrado") }
+        return UserDetail(usuario)
     }
 
 

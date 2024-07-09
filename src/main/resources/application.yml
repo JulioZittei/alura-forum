@@ -1,9 +1,16 @@
 server:
   port: '8080'
+  servlet:
+    context-path: /api/v1
+
 
 spring:
   application:
     name: alura-forum
+#  data:
+#    rest:
+#      basePath: /api
+#      defaultMediaType: application/json
   datasource:
     url: jdbc:mysql://localhost:3306/alura-forum-db?createDatabaseIfNotExist=true&serverTimezone=UTC
     username: root

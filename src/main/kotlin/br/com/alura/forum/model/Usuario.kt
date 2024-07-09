@@ -9,6 +9,7 @@ import jakarta.persistence.Id
 data class Usuario (
         val nome: String,
         val email: String,
+        val password: String,
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null

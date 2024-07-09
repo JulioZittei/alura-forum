@@ -7,4 +7,6 @@ data class CreateUsuarioRequest(
     val nome: String,
     @field:NotBlank
     val email: String,
+    @field:NotBlank
+    val senha: String
 )
