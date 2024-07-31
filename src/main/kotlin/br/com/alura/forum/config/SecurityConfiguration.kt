@@ -1,5 +1,8 @@
 package br.com.alura.forum.config
 
+import br.com.alura.forum.config.security.JWTAuthenticationFilter
+import br.com.alura.forum.config.security.JWTVerifyAuthenticationFilter
+import br.com.alura.forum.util.Constants.Companion.TOPICOS_PATH
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -12,12 +15,15 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfiguration {
-
+class SecurityConfiguration(
+    private val jwtUtil: JWTUtil,
+    private val authenticationConfiguration: AuthenticationConfiguration
+) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -31,13 +37,19 @@ class SecurityConfiguration {
                 Customizer { auth ->
                     auth
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, TOPICOS_PATH).hasAnyAuthority("LEITURA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.POST, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.PUT, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.DELETE, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
                         .anyRequest().authenticated()
                 }
             )
-            .formLogin { fl -> fl.disable() }
-            .httpBasic {}
+            .addFilterBefore(JWTAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), jwtUtil),
+                UsernamePasswordAuthenticationFilter().javaClass)
+            .addFilterBefore(JWTVerifyAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter().javaClass)
             .build()
     }
 
