@@ -20,8 +20,8 @@ class JWTAuthenticationFilter(
     UsernamePasswordAuthenticationFilter() {
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
-        val (username, password) = ObjectMapper().readValue(request?.inputStream, CredentialsRequest::class.java)
-        val token = UsernamePasswordAuthenticationToken(username, password)
+        val (email, password) = ObjectMapper().readValue(request?.inputStream, CredentialsRequest::class.java)
+        val token = UsernamePasswordAuthenticationToken(email, password)
         return authManager.authenticate(token)
     }
 
@@ -32,7 +32,7 @@ class JWTAuthenticationFilter(
         authResult: Authentication?
     ) {
         val email = (authResult?.principal as UserDetails).username
-        val authorities = (authResult?.principal as UserDetails).authorities
+        val authorities = (authResult.principal as UserDetails).authorities
         val token = jwtUtil.generateToken(email,  authorities.toList())
         response?.addHeader(AUTHORIZATION_HEADER, BEARER_TOKEN.plus(token))
 

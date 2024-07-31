@@ -27,6 +27,8 @@ class SecurityConfiguration(
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
+        val authenticationFilter = JWTAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), jwtUtil)
+        authenticationFilter.setFilterProcessesUrl("/auth/login")
         return http.csrf { csrf -> csrf.disable() }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(
@@ -47,8 +49,7 @@ class SecurityConfiguration(
                         .anyRequest().authenticated()
                 }
             )
-            .addFilterBefore(JWTAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), jwtUtil),
-                UsernamePasswordAuthenticationFilter().javaClass)
+            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter().javaClass)
             .addFilterBefore(JWTVerifyAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter().javaClass)
             .build()
     }
