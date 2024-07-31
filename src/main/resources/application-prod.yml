@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql-forum-container:3306/alura-forum-db?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: root
+    password: root
+  sql:
+    init:
+      mode: always
+
+jwt:
+  expiration: 60000
+  secret: "9XwpRBnR+cOSsvyU9gzkgW24DtXe9JHb3NbK6NQ0uM+07v46qjgaHW+j65ZPhURViPdmIe87y"
