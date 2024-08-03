@@ -19,6 +19,10 @@ services:
       - mynetwork
     depends_on:
       - mysql
+    environment:
+      - JAVA_OPTS=${JAVA_OPTS}
+      - PORT=${PORT}
+
 
 networks:
   mynetwork:

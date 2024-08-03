@@ -7,6 +7,10 @@ EXPOSE 8080
 COPY /wait-for-mysql.sh /wait-for-mysql.sh
 RUN chmod +x /wait-for-mysql.sh
 
+# Adicionar entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 ADD /target/forum-0.0.1-SNAPSHOT.jar forum.jar
 
-ENTRYPOINT ["java", "-jar", "forum.jar"]
+ENTRYPOINT ["/entrypoint.sh"]
