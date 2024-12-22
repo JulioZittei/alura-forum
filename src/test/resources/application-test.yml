@@ -1,0 +1,14 @@
+server:
+  servlet:
+    context-path: /api/v1
+
+
+spring:
+  application:
+    name: alura-forum
+  profiles:
+    active: @activatedProperties@
+  flyway:
+#    locations: classpath:db/migration/test
+#    baseline-on-migrate: true
+    table: flyway_schema_history_test
