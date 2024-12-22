@@ -3,12 +3,14 @@ package br.com.alura.forum.controller
 import br.com.alura.forum.dto.CreateCursoRequest
 import br.com.alura.forum.dto.CursoResponse
 import br.com.alura.forum.service.CursoService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping("/cursos")
 class CursoController (
     private val cursoService: CursoService

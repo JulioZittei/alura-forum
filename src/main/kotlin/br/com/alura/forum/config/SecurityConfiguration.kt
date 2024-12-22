@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
-
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration(
@@ -41,7 +40,7 @@ class SecurityConfiguration(
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v3/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, TOPICOS_PATH).hasAnyAuthority("LEITURA", "LEITURA_ESCRITA")
                         .requestMatchers(HttpMethod.POST, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
                         .requestMatchers(HttpMethod.PUT, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
