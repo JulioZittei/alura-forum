@@ -12,6 +12,7 @@ import br.com.alura.forum.repository.TopicoRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 
 @Service
@@ -26,7 +27,10 @@ class TopicoService (
     }
 
     fun findAllTopicos(curso: String?, pagination: Pageable): Page<TopicoResponse> {
-        return topicoRepository.findByCursoNomeContainingIgnoreCase(curso ?: "", pagination).map { t -> topicoResponseMapper.map(t) }
+        val topicos = curso?.let {
+            topicoRepository.findByCursoNomeContainingIgnoreCase(curso, pagination)
+        } ?: topicoRepository.findAll(pagination)
+        return topicos.map { t -> topicoResponseMapper.map(t) }
     }
 
     fun findTopicoById(id: Long): TopicoResponse {
@@ -46,8 +50,9 @@ class TopicoService (
     fun updateTopico(id: Long, topico: UpdateTopicoRequest): TopicoResponse {
         val existingTopico = topicoRepository.findById(id).orElseThrow {NotFoundException(TOPICO_NAO_ENCONTRADO)}
         val updatedTopico = topicoRepository.save(existingTopico.copy(
-            titulo = topico.titulo!!,
-            mensagem = topico.mensagem!!
+            titulo = topico.titulo,
+            mensagem = topico.mensagem,
+            dataAlteracao = LocalDateTime.now()
         ))
         return topicoResponseMapper.map(updatedTopico)
     }

@@ -14,8 +14,8 @@ class TopicoMapper(
 
     override fun map(t: CreateTopicoRequest): Topico {
         return Topico(
-            t.titulo!!,
-            t.mensagem!!,
+            t.titulo,
+            t.mensagem,
             cursoService.findById(t.idCurso!!),
             usuarioService.findById(t.idUsuario!!)
         )

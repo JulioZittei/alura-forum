@@ -13,7 +13,8 @@ class TopicoResponseMapper(): Mapper<Topico, TopicoResponse> {
             t.titulo,
             t.mensagem,
             t.status,
-            t.dataCriacao
+            t.dataCriacao,
+            t.dataAlteracao
         )
     }
 }
