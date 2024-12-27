@@ -1,17 +1,21 @@
 spring:
   datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://mysql-forum-container:3306/alura-forum-db?createDatabaseIfNotExist=true&serverTimezone=UTC
-    username: root
-    password: root
-  sql:
-    init:
-      mode: always
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
   cache:
     type: redis
   data:
     redis:
       host: localhost
       port: 6379
+      password: ${REDIS_PASSWORD}
   mail:
     host: sandbox.smtp.mailtrap.io
     port: 2525
