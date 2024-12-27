@@ -2,6 +2,7 @@ package br.com.alura.forum.controller
 
 import br.com.alura.forum.config.JWTUtil
 import br.com.alura.forum.model.Role
+import com.redis.testcontainers.RedisContainer
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
@@ -22,6 +24,7 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
+@ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TopicoControllerTest {
@@ -41,16 +44,23 @@ class TopicoControllerTest {
             withPassword("testpassword")
         }
 
+        @Container
+        private val redisContainer = RedisContainer("redis:7.4.1").apply {
+            withExposedPorts(6379)
+        }
+
         @BeforeAll
         @JvmStatic
         fun startContainer() {
             mysqlContainer.start()
+            redisContainer.start()
         }
 
         @AfterAll
         @JvmStatic
         fun stopContainer() {
             mysqlContainer.stop()
+            redisContainer.stop()
         }
 
         @JvmStatic
@@ -59,6 +69,8 @@ class TopicoControllerTest {
             registry.add("spring.datasource.url", mysqlContainer::getJdbcUrl)
             registry.add("spring.datasource.username", mysqlContainer::getUsername)
             registry.add("spring.datasource.password", mysqlContainer::getPassword)
+            registry.add("spring.data.redis.host", redisContainer::getHost)
+            registry.add("spring.data.redis.port", redisContainer::getFirstMappedPort)
         }
 
         private const val RECURSO = "/topicos"
