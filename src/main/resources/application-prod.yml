@@ -6,7 +6,26 @@ spring:
   sql:
     init:
       mode: always
-
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: a388b24612da92
+    password: 2b381ad981c13c
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 jwt:
   expiration: 60000
   secret: "9XwpRBnR+cOSsvyU9gzkgW24DtXe9JHb3NbK6NQ0uM+07v46qjgaHW+j65ZPhURViPdmIe87y"

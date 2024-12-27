@@ -14,7 +14,7 @@ data class Topico(
         val autor: Usuario,
         @Enumerated(EnumType.STRING)
         val status: StatusTopico = StatusTopico.NAO_RESPONDIDO,
-        @OneToMany
+        @OneToMany(mappedBy = "topico", cascade = [CascadeType.REMOVE])
         val respostas: List<Resposta> = ArrayList(),
         val dataCriacao: LocalDateTime = LocalDateTime.now(),
         var dataAlteracao: LocalDateTime? = null,

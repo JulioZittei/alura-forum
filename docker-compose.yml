@@ -10,6 +10,15 @@ services:
     networks:
       - mynetwork
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - redis_data:/data
+
   app:
     image: forum
     container_name: forum-container
@@ -23,7 +32,10 @@ services:
       - JAVA_OPTS=${JAVA_OPTS}
       - PORT=${PORT}
 
-
 networks:
   mynetwork:
     driver: bridge
+
+volumes:
+  redis_data:
+    driver: local

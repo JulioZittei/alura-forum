@@ -7,8 +7,6 @@ import br.com.alura.forum.dto.UpdateTopicoRequest
 import br.com.alura.forum.service.TopicoService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -25,10 +23,10 @@ class TopicoController (
 ) {
 
     @GetMapping
-    @Cacheable("topicoslist")
     fun getTopicos(@RequestParam(required = false) curso: String?, @PageableDefault(size = 5, page = 1) pagination: Pageable): Page<TopicoResponse> {
         val pageNumber = if (pagination.pageNumber >= 1) pagination.pageNumber - 1 else 0
-        return topicoService.findAllTopicos(curso, pagination.withPage(pageNumber))
+        val topicos = topicoService.findAllTopicos(curso, pagination.withPage(pageNumber))
+        return topicos
     }
 
     @GetMapping("/{id}")
@@ -37,7 +35,6 @@ class TopicoController (
     }
 
     @PostMapping
-    @CacheEvict("topicoslist", allEntries = true)
     fun createTopico(@Valid @RequestBody topico: CreateTopicoRequest, uriBuilder: UriComponentsBuilder): ResponseEntity<TopicoResponse> {
         val topicoResponse = topicoService.createTopico(topico)
         val uri = uriBuilder.path("topicos/${topicoResponse.id}").build().toUri()
@@ -45,7 +42,6 @@ class TopicoController (
     }
 
     @PutMapping("/{id}")
-    @CacheEvict("topicoslist", allEntries = true)
     fun updateTopico(@PathVariable id: Long, @Valid @RequestBody topico: UpdateTopicoRequest, uriBuilder: UriComponentsBuilder): ResponseEntity<TopicoResponse> {
         val topicoResponse = topicoService.updateTopico(id, topico)
         val uri = uriBuilder.path("topicos/${topicoResponse.id}").build().toUri()
@@ -54,7 +50,6 @@ class TopicoController (
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict("topicoslist", allEntries = true)
     fun deleteTopico(@PathVariable id: Long) {
         topicoService.deleteTopico(id)
     }

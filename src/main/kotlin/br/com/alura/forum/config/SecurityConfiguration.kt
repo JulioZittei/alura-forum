@@ -2,6 +2,8 @@ package br.com.alura.forum.config
 
 import br.com.alura.forum.config.security.JWTAuthenticationFilter
 import br.com.alura.forum.config.security.JWTVerifyAuthenticationFilter
+import br.com.alura.forum.util.Constants.Companion.RELATORIOS_PATH
+import br.com.alura.forum.util.Constants.Companion.RESPOSTAS_PATH
 import br.com.alura.forum.util.Constants.Companion.TOPICOS_PATH
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,7 +28,8 @@ class SecurityConfiguration(
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        val authenticationFilter = JWTAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), jwtUtil)
+        val authenticationFilter =
+            JWTAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), jwtUtil)
         authenticationFilter.setFilterProcessesUrl("/auth/login")
         return http.csrf { csrf -> csrf.disable() }
             .sessionManagement { session ->
@@ -41,10 +44,17 @@ class SecurityConfiguration(
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, TOPICOS_PATH).hasAnyAuthority("LEITURA", "LEITURA_ESCRITA")
-                        .requestMatchers(HttpMethod.POST, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
-                        .requestMatchers(HttpMethod.PUT, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
-                        .requestMatchers(HttpMethod.DELETE, TOPICOS_PATH).hasAnyAuthority("ESCRITA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.GET, RELATORIOS_PATH).hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, RESPOSTAS_PATH)
+                        .hasAnyAuthority("ADMIN", "ESCRITA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.GET, TOPICOS_PATH)
+                        .hasAnyAuthority("ADMIN", "LEITURA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.POST, TOPICOS_PATH)
+                        .hasAnyAuthority("ADMIN", "ESCRITA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.PUT, TOPICOS_PATH)
+                        .hasAnyAuthority("ADMIN", "ESCRITA", "LEITURA_ESCRITA")
+                        .requestMatchers(HttpMethod.DELETE, TOPICOS_PATH)
+                        .hasAnyAuthority("ADMIN", "ESCRITA", "LEITURA_ESCRITA")
                         .anyRequest().authenticated()
                 }
             )

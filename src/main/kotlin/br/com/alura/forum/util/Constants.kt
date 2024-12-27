@@ -7,6 +7,8 @@ abstract class Constants {
         const val BEARER_TOKEN = "Bearer "
 
         const val TOPICOS_PATH = "/topicos/**"
+        const val RESPOSTAS_PATH = "/respostas/**"
+        const val RELATORIOS_PATH = "/relatorios/**"
     }
 
 }
