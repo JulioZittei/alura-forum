@@ -9,10 +9,6 @@ data class Role(
     @JsonIgnore
     val nome: String,
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roles")
-    val usuarios: List<Usuario>,
-
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)

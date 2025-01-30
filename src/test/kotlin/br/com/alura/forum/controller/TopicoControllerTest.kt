@@ -32,6 +32,7 @@ class TopicoControllerTest {
     @Autowired
     private lateinit var webApplicationContext: WebApplicationContext
     private lateinit var mockMvc: MockMvc
+
     @Autowired
     private lateinit var jwtUtil: JWTUtil
     private var token: String? = null
@@ -88,7 +89,7 @@ class TopicoControllerTest {
 
     @Test
     fun `deve retornar topicos com o codigo 200 com sucesso`() {
-        mockMvc.get(RECURSO){
+        mockMvc.get(RECURSO) {
             headers {
                 token?.let { setBearerAuth(it) }
             }
@@ -99,7 +100,7 @@ class TopicoControllerTest {
 
     @Test
     fun `deve retornar um topico com o codigo 200 com sucesso quando informado um id de topico que existe`() {
-        mockMvc.get("$RECURSO/${1L}"){
+        mockMvc.get("$RECURSO/${1L}") {
             headers {
                 token?.let { setBearerAuth(it) }
             }
@@ -110,7 +111,7 @@ class TopicoControllerTest {
 
     @Test
     fun `deve retornar codigo 404 quando informado um id de topico que nao existe`() {
-        mockMvc.get("$RECURSO/${2L}"){
+        mockMvc.get("$RECURSO/${2L}") {
             headers {
                 token?.let { setBearerAuth(it) }
             }
@@ -127,7 +128,7 @@ class TopicoControllerTest {
     }
 
     private fun generateToken(): String? {
-        val authorities = mutableListOf(Role(id = 1, nome = "LEITURA", usuarios = listOf()))
+        val authorities = mutableListOf(Role(id = 3, nome = "LEITURA"))
         return jwtUtil.generateToken("ana@email.com", authorities)
     }
 }
