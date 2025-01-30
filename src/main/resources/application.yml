@@ -8,3 +8,9 @@ spring:
     name: alura-forum
   profiles:
     active: @activatedProperties@
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
